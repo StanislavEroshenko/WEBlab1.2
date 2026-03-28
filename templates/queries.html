@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>5 запросов на выборку</h2>
+
+  <h3>1. Связанные таблицы с фильтрацией и сортировкой</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>sale_id</th><th>order_name</th><th>amount</th><th>profit</th><th>quantity</th><th>customer</th><th>city</th><th>state</th><th>payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results.q1 %}
+        <tr>
+          <td>{{ r.sale_id }}</td><td>{{ r.order_name }}</td><td>{{ r.amount }}</td><td>{{ r.profit }}</td><td>{{ r.quantity }}</td><td>{{ r.customer_name }}</td><td>{{ r.city_name }}</td><td>{{ r.state_name }}</td><td>{{ r.payment_mode_name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2. Связанные таблицы с вычислением по строкам</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>sale_id</th><th>order_name</th><th>amount</th><th>quantity</th><th>avg_price_per_item</th><th>profit_margin_pct</th><th>category</th><th>sub_category</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results.q2 %}
+        <tr>
+          <td>{{ r.sale_id }}</td><td>{{ r.order_name }}</td><td>{{ r.amount }}</td><td>{{ r.quantity }}</td><td>{{ "%.2f"|format(r.avg_price_per_item or 0) }}</td><td>{{ "%.2f"|format(r.profit_margin_pct or 0) }}</td><td>{{ r.category_name }}</td><td>{{ r.sub_category_name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3. Группировка и агрегаты</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>category</th><th>sales_count</th><th>total_amount</th><th>avg_amount</th><th>total_profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results.q3 %}
+        <tr>
+          <td>{{ r.category_name }}</td><td>{{ r.sales_count }}</td><td>{{ r.total_amount }}</td><td>{{ "%.2f"|format(r.avg_amount or 0) }}</td><td>{{ r.total_profit }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4. Группировка с фильтрацией по исходным записям и сгруппированным значениям</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>state</th><th>sales_count</th><th>total_amount</th><th>total_profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results.q4 %}
+        <tr>
+          <td>{{ r.state_name }}</td><td>{{ r.sales_count }}</td><td>{{ r.total_amount }}</td><td>{{ r.total_profit }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5. Вложенный запрос</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>customer_name</th><th>total_amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results.q5 %}
+        <tr>
+          <td>{{ r.customer_name }}</td><td>{{ r.total_amount }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Воссоздание универсального отношения</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>order_name</th><th>amount</th><th>profit</th><th>quantity</th><th>category</th><th>sub_category</th><th>payment_mode</th><th>order_date</th><th>customer_name</th><th>state</th><th>city</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in universal_rows %}
+        <tr>
+          <td>{{ r.order_name }}</td><td>{{ r.amount }}</td><td>{{ r.profit }}</td><td>{{ r.quantity }}</td><td>{{ r.category }}</td><td>{{ r.sub_category }}</td><td>{{ r.payment_mode }}</td><td>{{ r.order_date }}</td><td>{{ r.customer_name }}</td><td>{{ r.state }}</td><td>{{ r.city }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

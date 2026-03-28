@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title if title else "ЛР Веб-программирование" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Лабораторная работа: продажи и декомпозиция БД</h1>
+      <p>Flask + ORM + SQLite</p>
+    </div>
+    <nav class="nav">
+      <a href="{{ url_for('index') }}">Главная</a>
+      <a href="{{ url_for('queries') }}">Запросы</a>
+      <form action="{{ url_for('reimport') }}" method="post" style="display:inline">
+        <button type="submit">Пересобрать БД</button>
+      </form>
+    </nav>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="messages">
+          {% for category, message in messages %}
+            <div class="message {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <section class="sidebar">
+      <h2>Навигация по таблицам</h2>
+      <div class="table-links">
+        {% for slug, title, model in nav_tables %}
+          <a href="{{ url_for('table_view', slug=slug) }}">{{ title }}</a>
+        {% endfor %}
+      </div>
+    </section>
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

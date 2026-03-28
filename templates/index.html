@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Продажи и декомпозиция БД</title>
+</head>
+<body>
+
+<form action="{{ url_for('reimport') }}" method="post">
+    <button type="submit">Пересобрать базу данных</button>
+</form>
+
+<hr>
+
+<!-- Таблицы -->
+{% for table in all_tables %}
+<h3>{{ table.title }}</h3>
+<table border="1" cellpadding="3" cellspacing="0">
+    <tr>
+        {% for col in table.columns %}
+        <th>{{ col }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in table.rows %}
+    <tr>
+        {% for col in table.columns %}
+        <td>{{ row[col] }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<br>
+{% endfor %}
+
+<hr>
+
+<h2>Запросы</h2>
+{% for qname, qrows in results.items() %}
+<h4>{{ qname }}</h4>
+{% if qrows %}
+<table border="1" cellpadding="3" cellspacing="0">
+    <tr>
+        {% for col in qrows[0].keys() %}
+        <th>{{ col }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in qrows %}
+    <tr>
+        {% for col in row.keys() %}
+        <td>{{ row[col] }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Нет данных</p>
+{% endif %}
+<br>
+{% endfor %}
+
+<hr>
+
+<h2>Универсальная таблица (ограничено 50)</h2>
+{% if universal_rows %}
+<table border="1" cellpadding="3" cellspacing="0">
+    <tr>
+        {% for col in universal_rows[0].keys() %}
+        <th>{{ col }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in universal_rows %}
+    <tr>
+        {% for col in row.keys() %}
+        <td>{{ row[col] }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Нет данных</p>
+{% endif %}
+
+</body>
+</html>
